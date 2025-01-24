@@ -118,20 +118,8 @@ docker rmi 1min-relay:latest
 ```
 
 Optional: Run with Docker Compose
-If you prefer Docker Compose, you can create a docker-compose.yml like:
-
-```yaml
-services:
-  1min-relay:
-    image: ghcr.io/kokofixcomputers/1min_relay:latest
-    container_name: 1min-relay-container
-    ports:
-      - "5001:5001"
-    environment:
-      - SUBSET_OF_ONE_MIN_PERMITTED_MODELS=mistral-nemo,gpt-4o-mini,deepseek-chat # Defines a subset of supported 1min.ai models to be exposed by this service. Default: "mistral-nemo", "gpt-4o", "deepseek-chat".
-      - PERMIT_MODELS_FROM_SUBSET_ONLY=True # Restricts model usage to those specified in SUBSET_OF_ONE_MIN_PERMITTED_MODELS. If set to False, any model supported by 1min.ai can be used. Default: True.
-
-```
+If you prefer Docker Compose, you can create a docker-compose.yml
+See the contents of docker-compose.yml file in the repo for reference.
 
 Then just run:
 
