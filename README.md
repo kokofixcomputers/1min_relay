@@ -117,7 +117,8 @@ To remove the image entirely:
 docker rmi 1min-relay:latest
 ```
 
-Optional: Run with Docker Compose
+#### Docker Compose (optional)
+
 If you prefer Docker Compose, you can create a docker-compose.yml
 See the contents of docker-compose.yml file in the repo for reference.
 
