@@ -1,6 +1,44 @@
 # 1min-Relay
 Relay 1min AI API to OpenAI Structure in 1 minute.
 
+## New: GUI Control Panel
+The 1min-relay now includes a graphical control panel that makes it easy to:
+- Configure and manage the relay server
+- Control which AI models are available
+- Monitor server status in real-time
+- Manage rate limiting and caching settings
+
+### GUI Features:
+1. **Server Management**:
+   - Start/Stop the relay server
+   - Real-time status monitoring
+   - Configure host and port settings
+   - Secure API key management
+
+2. **Model Control**:
+   - Filter available AI models
+   - Restrict to specific model subsets
+   - View currently available models
+   - Real-time model list refresh
+
+3. **Performance Settings**:
+   - Configure rate limiting
+   - Enable/disable memcached caching
+   - Set request limits and periods
+   - Monitor server health
+
+4. **bolt.diy Integration**:
+   - Easy endpoint configuration
+   - Direct model access
+   - Automatic OpenAI API compatibility
+
+### Using the GUI:
+1. Run `gui.py` to launch the control panel
+2. Enter your 1min.ai API key
+3. Configure desired settings
+4. Start the server
+5. For bolt.diy: Use `http://localhost:5001/v1/chat/completions` as your endpoint
+
 Don't forget to star this repository if you like it! 
 
 ## Features
@@ -100,20 +138,20 @@ docker run -d --name 1min-relay-container --network 1min-relay-network -p 5001:5
 ```
 
 - `-d` runs the container in detached (background) mode.
-- `-p 5001:5001` maps your host’s port 5001 to the container’s port 5001.
+- `-p 5001:5001` maps your host's port 5001 to the container's port 5001.
 - `--name 1min-relay-container` is optional, but it makes it easier to stop or remove the container later.
 - `-e`: Specifies environment variables.
 - `SUBSET_OF_ONE_MIN_PERMITTED_MODELS`: Specifies a subset of 1min.ai models to expose. Default: mistral-nemo,gpt-4o,deepseek-chat.
 - `PERMIT_MODELS_FROM_SUBSET_ONLY`: Restricts model usage to the specified subset. Set to True to enforce this restriction or False to allow all models supported by 1min.ai. Default: False.
 
 
-4. Verify It’s Running
+4. Verify It's Running
 Check logs (optional):
 
 ```bash
 docker logs -f 1min-relay-container
 ```
-You should see your Flask server output: “Server is ready to serve at …”
+You should see your Flask server output: "Server is ready to serve at ..."
 
 Test from your host machine:
 

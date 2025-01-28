@@ -6,4 +6,6 @@ flask-limiter
 limits[memcached]
 coloredlogs
 printedcolors
+PyQt6>=6.4.0
+Pillow>=9.0.0
 pymemcache
