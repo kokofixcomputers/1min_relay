@@ -1,5 +1,5 @@
 services:
-  # Database
+  # Memcached for storing rate-limits data.
   memcached:
     image: memcached:latest
     networks:
@@ -19,7 +19,7 @@ services:
     environment:
       # Use comma-separated string for ONE_MIN_AVAILABLE_MODELS Default: "mistral-nemo", "gpt-4o", "deepseek-chat"
       - SUBSET_OF_ONE_MIN_PERMITTED_MODELS=mistral-nemo,gpt-4o-mini,deepseek-chat
-      # Set your boolean as "True" or "False" for PERMIT_MODELS_NOT_IN_AVAILABLE_MODELS Default: False
+      # Set your boolean as "True" or "False" for PERMIT_MODELS_FROM_SUBSET_ONLY Default: False
       - PERMIT_MODELS_FROM_SUBSET_ONLY=False
     restart: unless-stopped
 

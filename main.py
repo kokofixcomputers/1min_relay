@@ -10,7 +10,7 @@ import socket
 from mistral_common.tokens.tokenizers.mistral import MistralTokenizer
 from mistral_common.protocol.instruct.messages import UserMessage
 from mistral_common.protocol.instruct.request import ChatCompletionRequest
-
+from pymemcache.client import base
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
@@ -29,7 +29,23 @@ logger = logging.getLogger(__name__)
 # Install coloredlogs with desired log level
 coloredlogs.install(level='DEBUG', logger=logger)
 
-
+def check_memcached_connection(host='localhost', port=11211):
+    try:
+        # Attempt to connect to Memcached
+        client = base.Client((host, port))
+        
+        # If the connection is successful, try setting a key to ensure it's working
+        client.set('test_key', 'test_value')
+        
+        # If setting the key succeeds, retrieve it to verify
+        if client.get('test_key') == b'test_value':
+            # Close the connection
+            client.close()
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
 
 
 # Function to ensure the storage directory exists
@@ -76,13 +92,13 @@ def calculate_token(sentence, model="DEFAULT"):
         tokens = encoding.encode(sentence)
         return len(tokens)
 app = Flask(__name__)
-try:
+if check_memcached_connection():
     limiter = Limiter(
         get_remote_address,
         app=app,
         storage_uri="memcached://memcached:11211",  # Connect to Memcached created with docker
     )
-except:
+else:
     # Used for ratelimiting without memcached
     limiter = Limiter(
         get_remote_address,
@@ -335,6 +351,7 @@ def conversation():
     headers = {"API-KEY": api_key, 'Content-Type': 'application/json'}
 
     if not request_data.get('stream', False):
+        # Non-Streaming Response
         logger.debug("Non-Streaming AI Response")
         response = requests.post(ONE_MIN_API_URL, json=payload, headers=headers)
         response.raise_for_status()
@@ -347,6 +364,7 @@ def conversation():
         return response, 200
     
     else:
+        # Streaming Response
         logger.debug("Streaming AI Response")
         response_stream = requests.post(ONE_MIN_CONVERSATION_API_STREAMING_URL, data=json.dumps(payload), headers=headers, stream=True)
         if response_stream.status_code != 200:
@@ -354,7 +372,7 @@ def conversation():
                 return ERROR_HANDLER(1020)
             logger.error(f"An unknown error occurred while processing the user's request. Error code: {response_stream.status_code}")
             return ERROR_HANDLER(response_stream.status_code)
-        return Response(actual_stream_response(response_stream, request_data, request_data.get('model', 'mistral-nemo'), int(prompt_token)), content_type='text/event-stream')
+        return Response(stream_response(response_stream, request_data, request_data.get('model', 'mistral-nemo'), int(prompt_token)), content_type='text/event-stream')
 def handle_options_request():
     response = make_response()
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -393,7 +411,7 @@ def set_response_headers(response):
     response.headers['Access -Control-Allow-Origin'] = '*'
     response.headers['X-Request-ID'] = str (uuid.uuid4())
 
-def actual_stream_response(response, request_data, model, prompt_tokens):
+def stream_response(response, request_data, model, prompt_tokens):
     all_chunks = ""
     for chunk in response.iter_content(chunk_size=1024):
         finish_reason = None

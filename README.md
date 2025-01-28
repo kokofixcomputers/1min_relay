@@ -44,7 +44,6 @@ Don't forget to star this repository if you like it!
 ## Features
 - **bolt.diy Support**: Compatible with bolt.diy for seamless integration.
 - **Conversation History**: Retain and manage conversation history effortlessly.
-- **Text File Upload**: Supports text file uploads from select clients.
 - **Broad Client Compatibility**: Works with most clients supporting OpenAI Custom Endpoint.
 - **Fast and Reliable Relay**: Relays 1min AI API to OpenAI-compatible structure within 1 minute.
 - **User-Friendly**: Easy to set up and quick to use.
@@ -52,15 +51,18 @@ Don't forget to star this repository if you like it!
 - **Streaming Support**: Enables real-time streaming for faster interactions.
 - **Non-Streaming Support**: Compatible with non-streaming workflows.
 - **Docker Support**: Deploy easily with Docker for fast and consistent setup.
-- **Document Support**: Supports document uploads for enhanced functionality. Some include .docx, .pdf, .txt, .yaml and etc.
-- **Image Upload**: Supports image uploads for enhanced functionality.
+- **Multi-Document Support**: Supports document uploads for enhanced functionality. Some include .docx, .pdf, .txt, .yaml and etc.
+- **Image Support**: Supports image uploads for enhanced functionality.
 - **ARM64 and AMD64 Support**: Compatible with both ARM64 and AMD64 architectures.
 - **Multiple Requests**: Supports multiple requests simultaneously.
 
 
 ## Installation:
 
-Clone the git repo into your machine.
+Clone the git repo into your machine with:
+```bash
+git clone https://github.com/kokofixcomputers/1min-relay.git
+```
 
 ### Bare-metal
 
@@ -71,9 +73,10 @@ pip install -r requirements.txt
 
 and then run python3 main.py
 
-Depending on your system, you may need to run python
+Depending on your system, you may need to run `python` instead of `python3`.
 
 ### Docker
+Running 1min-relay in docker is the easiet method. Please note that the connection ip address displayed on server start will be wrong when in docker.
 
 #### Pre-Built images
 
@@ -187,6 +190,20 @@ Compose will automatically do these things for you:
 - Create a network
 - Run Memcached
 - Run the 1min-relay Container
+
+#### Managing docker containers
+You can also have multiple instances of 1min-relay running on the same machine with docker.
+
+You just need to chznge the name parameter of the container so you can identify them.
+
+To stop a 1min-relay container, run:
+```bash
+docker stop 1min-relay-container
+```
+To start it again, run:
+```bash
+docker start 1min-relay-container
+```
 
 ### Environment Variables
 - `SUBSET_OF_ONE_MIN_PERMITTED_MODELS`: Specifies a subset of 1min.ai models to expose. Default: mistral-nemo,gpt-4o,deepseek-chat.
